@@ -1,4 +1,4 @@
-package org.dbserver.Controller;
+package org.dbserver;
 import org.dbserver.DTO.CepResponse;
 import org.dbserver.Service.CepService;
 import org.springframework.beans.factory.annotation.Autowired;
