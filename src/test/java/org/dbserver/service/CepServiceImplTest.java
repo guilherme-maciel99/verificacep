@@ -5,6 +5,7 @@ import org.dbserver.Handler.CepNaoEncontrado;
 import org.dbserver.Service.CepServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.client.RestTemplate;
@@ -15,17 +16,17 @@ import static org.mockito.Mockito.*;
 
 public class CepServiceImplTest {
 
-        private CepServiceImpl cepService;
-
         @Mock
         private RestTemplate restTemplate;
+
+        @InjectMocks
+        private CepServiceImpl cepService;
 
         private String cepNumero = "12345678";
 
         @BeforeEach
         public void setUp() {
             MockitoAnnotations.openMocks(this);
-            cepService = new CepServiceImpl();
         }
 
         @Test

@@ -8,12 +8,17 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class CepServiceImpl implements CepService{
 
+    private RestTemplate restTemplate;
+
+    public CepServiceImpl(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
+
     @Override
     public CepResponse buscarCEP(String cepNumero) {
         String apiUrl = "https://viacep.com.br/ws/";
         String endpoint = cepNumero + "/json/";
-
-        RestTemplate restTemplate = new RestTemplate();
         CepResponse cepResponse = restTemplate.getForObject(apiUrl + endpoint, CepResponse.class);
 
         if (cepResponse == null) {
