@@ -17,8 +17,6 @@ public class AssuredTest {
     @LocalServerPort
     private int port;
 
-    private final String url = "https://viacep.com.br/ws";
-
     @BeforeEach
     void setup(){
         RestAssured.port = this.port;
@@ -27,9 +25,10 @@ public class AssuredTest {
     @Test
     public void testBuscarCep() {
         given()
+                .header("", "")
                 .contentType(ContentType.JSON)
                 .when()
-                .get(url + "/94075-370/json/")
+                .get("/cep/94075370")
                 .then()
                 .statusCode(200)
                 .body("logradouro", equalTo("Rua Três Barras"))

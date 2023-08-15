@@ -14,7 +14,6 @@ public class CepServiceImpl implements CepService{
         this.restTemplate = restTemplate;
     }
 
-
     @Override
     public CepResponse buscarCEP(String cepNumero) {
         String apiUrl = "https://viacep.com.br/ws/";
@@ -27,5 +26,5 @@ public class CepServiceImpl implements CepService{
 
         return cepResponse;
     }
-    
+
 }
