@@ -1,40 +1,68 @@
 package org.dbserver.client;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.core.Options;
-import org.dbserver.CepController;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import org.dbserver.Controller.CepController;
+import org.dbserver.DTO.CepResponse;
 import org.dbserver.Service.CepService;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.assertj.core.api.Assertions.assertThat;
+// ...
 
-@AutoConfigureWireMock(port = Options.DYNAMIC_PORT)
-@WebMvcTest(CepController.class)
-@AutoConfigureMockMvc
+// ...
+
+@SpringBootTest
+@AutoConfigureWireMock(port = 0) // Escolhe automaticamente uma porta livre
 public class CepControllerTest {
+
     @MockBean
     private CepService cepService;
+
     @Autowired
-    private MockMvc mockMvc;
+    private CepController cepController;
+
+    private static WireMockServer wireMockServer;
+
+    @BeforeAll
+    public static void setup() {
+        wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().dynamicPort());
+        wireMockServer.start();
+        WireMock.configureFor("localhost", wireMockServer.port());
+    }
+
+    @AfterAll
+    public static void tearDown() {
+        wireMockServer.stop();
+    }
+// ...
+
     @Test
-    public void testBuscarCep() throws Exception {
-        WireMock.stubFor(get(urlEqualTo("/cep/12345678"))
+    public void testBuscarCep() {
+        stubFor(get(urlEqualTo("/cep/94075-370"))
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
-                        .withBody("{\"logradouro\":\"Rua Exemplo\",\"bairro\":\"Bairro Exemplo\"}")));
-        mockMvc.perform((RequestBuilder) get("/cep/12345678"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.logradouro").value("Rua Exemplo"))
-                .andExpect(jsonPath("$.bairro").value("Bairro Exemplo"));
-        verify(getRequestedFor(urlEqualTo("/cep/12345678")));
+                        .withBody("{\"logradouro\":\"Rua Três Barras\",\"bairro\":\"Parque Florido\"}")));
+
+        ResponseEntity<CepResponse> responseEntity = cepController.buscarCep("94075-370");
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        CepResponse cepResponse = responseEntity.getBody();
+        assertThat(cepResponse.getLogradouro()).isEqualTo("Rua Três Barras");
+        assertThat(cepResponse.getBairro()).isEqualTo("Parque Florido");
+
+        verify(getRequestedFor(urlEqualTo("/cep/94075-370")));
     }
+
 }

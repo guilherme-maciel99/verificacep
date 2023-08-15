@@ -1,14 +1,16 @@
 package org.dbserver.DTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 import lombok.Getter;
 
+@Data
 @Getter
 public class CepResponse {
     @JsonProperty("cep")
     private String cepNumero;
     @JsonProperty("logradouro")
-    private String endereco;
+    private String logradouro;
     @JsonProperty("complemento")
     private String complemento;
     @JsonProperty("bairro")
@@ -21,6 +23,14 @@ public class CepResponse {
     private Integer ibge;
     @JsonProperty("ddd")
     private Integer ddd;
+
+    public String getLogradouro() {
+        return logradouro;
+    }
+
+    public String getBairro() {
+        return bairro;
+    }
 }
 
 
