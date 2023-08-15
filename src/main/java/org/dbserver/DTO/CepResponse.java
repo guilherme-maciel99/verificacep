@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.Getter;
 
 @Data
-@Getter
 public class CepResponse {
     @JsonProperty("cep")
     private String cepNumero;
@@ -24,13 +23,6 @@ public class CepResponse {
     @JsonProperty("ddd")
     private Integer ddd;
 
-    public String getLogradouro() {
-        return logradouro;
-    }
-
-    public String getBairro() {
-        return bairro;
-    }
 }
 
 
